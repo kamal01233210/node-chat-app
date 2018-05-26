@@ -20,10 +20,10 @@ io.on('connection',(socketIo)=>{
 		createAt : '123'
 	});*/
 
-	socketIo.emit('newMessage',{
+	/*socketIo.emit('newMessage',{
 		from:"server",
 		text:"hahah"
-	});
+	});*/
 
 	/*socketIo.on('createEmail',(newEmail)=>{
 		console.log('createEmail',newEmail);
@@ -31,6 +31,11 @@ io.on('connection',(socketIo)=>{
 
 	socketIo.on('createMessage',(message)=>{
 		console.log('createMessage',message);
+		io.emit('newMessage',{
+			from:message.from,
+			text:message.text,
+			createAt: new Date().getTime()
+		});
 	})
 	socketIo.on('disconnect',()=>{
 		console.log('user disconnected');

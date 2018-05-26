@@ -7,10 +7,10 @@ socketIo.on('connect',function (){
 		text:'this is andrew'
 	});*/
 
-	socketIo.emit('createMessage',{
+	/*socketIo.emit('createMessage',{
 		from:"kamal",
 		text:"this works for me"
-	});
+	});*/
 });
 socketIo.on('disconnect',function (){
 	console.log('disconnected');
