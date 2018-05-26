@@ -1,6 +1,7 @@
 const path = require('path');
 const http = require('http');
 const express = require('express');
+const {generateMessage} = require('./utils/messages');
 
 const socket = require('socket.io');
 const publicPath = path.join(__dirname,'../public');
@@ -29,27 +30,17 @@ io.on('connection',(socketIo)=>{
 		console.log('createEmail',newEmail);
 	});*/
 
-	 socketIo.emit('newMessage',{
-	 	from:'Admin',
-	 	text:'Welcome to the chat app'
-	 });
-	 socketIo.broadcast.emit('newMessage',{
-	 	from:'Admin',
-	 	text:'New user joined',
-	 	createdAt:new Date().getTime()
-	 });
-	socketIo.on('createMessage',(message)=>{
-		console.log('createMessage',message);
+	 socketIo.emit('newMessage',generateMessage('Admin','Welcome to the chat app'));
+	 socketIo.broadcast.emit('newMessage',generateMessage('Admin','New user joined'));
+	socketIo.on('createMessage',(message,callback)=>{
+		console.log('createMessage',message); 
 		/*io.emit('newMessage',{
 			from:message.from,
 			text:message.text,
 			createAt: new Date().getTime()
 		});*/
-		socketIo.broadcast.emit('newMessage',{
-			from:message.from,
-			text:message.text,
-			createAt: new Date().getTime()
-		});
+		socketIo.broadcast.emit('newMessage',generateMessage(message.from,message.text));
+		callback();
 	})
 	socketIo.on('disconnect',()=>{
 		console.log('user disconnected');

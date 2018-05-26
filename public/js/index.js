@@ -22,4 +22,25 @@ socketIo.on('disconnect',function (){
 
 socketIo.on('newMessage',function(newMessage){
 	console.log('newMessage',newMessage);
+	var li = jQuery('<li></li>');
+	li.text(`${newMessage.from}:${newMessage.text}`);
+	jQuery('#messages').append(li);
+});	
+
+
+/*socketIo.emit('createMessage',{
+	from:"frank",
+	text:"hi"
+},function(){
+	console.log('got it');
+});*/
+
+jQuery('#message-form').on('submit',function(e){
+	e.preventDefault();
+	socketIo.emit('createMessage',{
+		from:'User',
+		text:$('[name=message]').val()
+	},function(){
+
+	});
 });
