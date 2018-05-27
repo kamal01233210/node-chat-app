@@ -21,10 +21,20 @@ socketIo.on('disconnect',function (){
 });*/
 
 socketIo.on('newMessage',function(newMessage){
-	console.log('newMessage',newMessage);
+	/*
 	var li = jQuery('<li></li>');
-	li.text(`${newMessage.from}:${newMessage.text}`);
-	jQuery('#messages').append(li);
+	li.text(`${newMessage.from} ${formattedTime}:${newMessage.text}`);
+	jQuery('#messages').append(li);*/
+
+	var formattedTime = moment(newMessage.createdAt).format('h:mm a');
+	var template = jQuery('#message-template').html();
+	var html = Mustache.render(template,{
+		text:newMessage.text,
+		from:newMessage.from,
+		createdAt:formattedTime
+	});
+
+	jQuery('#messages').append(html);
 });	
 
 
@@ -36,12 +46,20 @@ socketIo.on('newMessage',function(newMessage){
 });*/
 
 socketIo.on('newLocationMessage',function(message){
-	var li = jQuery('<li></li>');
+	var formattedTime = moment(message.createdAt).format('h:mm a');
+
+	/*var li = jQuery('<li></li>');
 	var a = jQuery('<a target="_blank">My Current Location</a>');
-	li.text(`${message.from}: `);
+	li.text(`${message.from} ${formattedTime}: `);
 	a.attr('href',message.url);
-	li.append(a);
-	jQuery('#messages').append(li); 
+	li.append(a);*/
+	var locationTemplate = jQuery('#location-message-template').html();
+	var html = Mustache.render(locationTemplate,{
+		url:message.url,
+		from:message.from,
+		createdAt:formattedTime
+	});
+	jQuery('#messages').append(html); 
 });
 
 jQuery('#message-form').on('submit',function(e){
