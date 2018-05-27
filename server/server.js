@@ -1,7 +1,7 @@
 const path = require('path');
 const http = require('http');
 const express = require('express');
-const {generateMessage} = require('./utils/messages');
+const {generateMessage,generateLocationMessage} = require('./utils/messages');
 
 const socket = require('socket.io');
 const publicPath = path.join(__dirname,'../public');
@@ -41,7 +41,11 @@ io.on('connection',(socketIo)=>{
 		});*/
 		socketIo.broadcast.emit('newMessage',generateMessage(message.from,message.text));
 		callback();
-	})
+	});
+
+	socketIo.on('createLocationMessage',(coords)=>{
+		io.emit('newLocationMessage',generateLocationMessage('Admin',coords.latitude,coords.longitude))
+	});
 	socketIo.on('disconnect',()=>{
 		console.log('user disconnected');
 	});
