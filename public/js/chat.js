@@ -17,7 +17,15 @@ function scrollToBottom(){
 }
 
 socketIo.on('connect',function (){
-	console.log('connected');
+	var params = jQuery.deparam(window.location.search);
+	socketIo.emit('join',params,function(err){
+		if(err){
+			alert(err);
+			window.location.href = '/';
+		}else{
+			console.log('No error');
+		}
+	});
 
 	/*socketIo.emit('createEmail',{
 		to:'jen@example.com',
@@ -31,6 +39,14 @@ socketIo.on('connect',function (){
 });
 socketIo.on('disconnect',function (){
 	console.log('disconnected');
+});
+
+socketIo.on('updateUserList',function(users){
+	var ol = jQuery('<ol></ol>');
+	users.forEach(function(user){
+		ol.append(jQuery('<li></li>').text(user));
+	});
+	jQuery('#users').html(ol);
 });
 
 /*socketIo.on('newEmail',function(email){
