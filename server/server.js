@@ -50,19 +50,26 @@ io.on('connection',(socketIo)=>{
 		callback();
 	});
 
-	socketIo.on('createMessage',(message,callback)=>{
-		console.log('createMessage',message); 
+	socketIo.on('createMessage',(message,callback)=>{		
 		/*io.emit('newMessage',{
 			from:message.from,
 			text:message.text,
 			createAt: new Date().getTime()
 		});*/
-		io.emit('newMessage',generateMessage(message.from,message.text));
+		var user = users.getUser(socketIo.id);console.log(user);
+		if(user && isRealString(message.text)){
+			io.to(user.room).emit('newMessage',generateMessage(user.name,message.text));
+		}
+		
 		callback();
 	});
 
 	socketIo.on('createLocationMessage',(coords)=>{
-		io.emit('newLocationMessage',generateLocationMessage('Admin',coords.latitude,coords.longitude))
+		var user = users.getUser(socketIo.id);
+		if(user){
+			io.to(user.room).emit('newLocationMessage',generateLocationMessage(user.name,coords.latitude,coords.longitude))	
+		}	
+		
 	});
 	socketIo.on('disconnect',()=>{
 		var user = users.removeUser(socketIo.id);
